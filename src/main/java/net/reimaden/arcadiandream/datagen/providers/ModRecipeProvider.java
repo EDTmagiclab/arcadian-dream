@@ -15,9 +15,10 @@ import net.minecraft.recipe.AbstractCookingRecipe;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.reimaden.arcadiandream.ArcadianDream;
+import net.reimaden.arcadiandream.item.ModItems;
 import net.reimaden.arcadiandream.util.ModTags;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,6 +73,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         return new Identifier("ritual_crafting/"
                 + RecipeProvider.getRecipeName(item)
                 + "_from_ritual_crafting");
+    }
+
+    private static Identifier getIdentifier(Item item) {
+        return new Identifier(ArcadianDream.MOD_ID, RecipeProvider.getRecipeName(item));
     }
 
     protected static void makeReversibleCompacting(Consumer<RecipeJsonProvider> exporter, RecipeCategory reverseCategory,
@@ -276,7 +281,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .pattern("XXX")
                 .criterion(RecipeProvider.hasItem(pattern),
                         RecipeProvider.conditionsFromItem(pattern))
-                .offerTo(exporter, "copy_" + Registries.ITEM.getId(pattern.asItem()).getPath());
+                .offerTo(exporter, new Identifier(ArcadianDream.MOD_ID, "copy_" + RecipeProvider.getRecipeName(pattern)));
     }
 
     protected static void makePatterns(Consumer<RecipeJsonProvider> exporter, ItemConvertible template, ItemConvertible pattern) {
@@ -284,8 +289,54 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         makePatternCopy(exporter, pattern);
     }
 
-    @Override
-    public void generate(Consumer<RecipeJsonProvider> exporter) {
-
+    @SuppressWarnings("unused")
+    protected static void makeSmithingTemplateCopyingRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible template,
+                                                            ItemConvertible resource) {
+        makeSmithingTemplateCopyingRecipePlain(exporter, template, resource, Items.DIAMOND);
     }
+
+    @SuppressWarnings("unused")
+    protected static void makeSmithingTemplateCopyingRecipe(Consumer<RecipeJsonProvider> exporter, ItemConvertible template,
+                                                            TagKey<Item> resource) {
+        makeSmithingTemplateCopyingRecipePlain(exporter, template, resource, Items.DIAMOND);
+    }
+
+    protected static void makeSmithingTemplateCopyingRecipePlain(Consumer<RecipeJsonProvider> exporter, ItemConvertible template,
+                                                                 ItemConvertible resource, ItemConvertible main) {
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, template, 2)
+                .input('#', main)
+                .input('C', resource)
+                .input('S', template)
+                .pattern("#S#")
+                .pattern("#C#")
+                .pattern("###")
+                .criterion(RecipeProvider.hasItem(template),
+                        RecipeProvider.conditionsFromItem(template))
+                .offerTo(exporter);
+    }
+
+    protected static void makeSmithingTemplateCopyingRecipePlain(Consumer<RecipeJsonProvider> exporter, ItemConvertible template,
+                                                                 TagKey<Item> resource, ItemConvertible main) {
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, template, 2)
+                .input('#', main)
+                .input('C', resource)
+                .input('S', template)
+                .pattern("#S#")
+                .pattern("#C#")
+                .pattern("###")
+                .criterion(RecipeProvider.hasItem(template),
+                        RecipeProvider.conditionsFromItem(template))
+                .offerTo(exporter);
+    }
+
+    protected static void makeHihiirokaneUpgradeRecipe(Consumer<RecipeJsonProvider> exporter, Item input, RecipeCategory category, Item result) {
+        SmithingTransformRecipeJsonBuilder.create(Ingredient.ofItems(ModItems.HIHIIROKANE_UPGRADE_SMITHING_TEMPLATE),
+                        Ingredient.ofItems(input), Ingredient.ofItems(ModItems.HIHIIROKANE_INGOT), category, result)
+                .criterion(RecipeProvider.hasItem(ModItems.HIHIIROKANE_INGOT),
+                        RecipeProvider.conditionsFromItem(ModItems.HIHIIROKANE_INGOT))
+                .offerTo(exporter, getIdentifier(result) + "_smithing");
+    }
+
+    @Override
+    public void generate(Consumer<RecipeJsonProvider> exporter) {}
 }

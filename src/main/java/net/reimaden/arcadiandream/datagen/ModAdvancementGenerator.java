@@ -33,6 +33,7 @@ import net.reimaden.arcadiandream.ArcadianDream;
 import net.reimaden.arcadiandream.advancement.BulletsCancelledCriterion;
 import net.reimaden.arcadiandream.advancement.DanmakuModifiedCriterion;
 import net.reimaden.arcadiandream.advancement.RitualCraftingCriterion;
+import net.reimaden.arcadiandream.block.ModBlocks;
 import net.reimaden.arcadiandream.item.ModItems;
 import net.reimaden.arcadiandream.item.custom.danmaku.DyeableBullet;
 import net.reimaden.arcadiandream.util.ColorMap;
@@ -102,7 +103,7 @@ public class ModAdvancementGenerator extends FabricAdvancementProvider {
 
             Advancement ritualCrafting = Advancement.Builder.create()
                     .parent(mineDragonGem)
-                    .display(makeDisplay(AdvancementFrame.TASK, ModItems.RITUAL_SHRINE, "ritual_crafting"))
+                    .display(makeDisplay(AdvancementFrame.TASK, ModBlocks.RITUAL_SHRINE, "ritual_crafting"))
                     .criterion("ritual_crafting", RitualCraftingCriterion.Conditions.create())
                     .build(consumer, makeName("ritual_crafting"));
 
@@ -123,7 +124,7 @@ public class ModAdvancementGenerator extends FabricAdvancementProvider {
 
             Advancement modifyDanmaku = Advancement.Builder.create()
                     .parent(shootDanmaku)
-                    .display(makeDisplay(AdvancementFrame.TASK, ModItems.DANMAKU_CRAFTING_TABLE, "modify_danmaku"))
+                    .display(makeDisplay(AdvancementFrame.TASK, ModBlocks.DANMAKU_CRAFTING_TABLE, "modify_danmaku"))
                     .criterion("modified_danmaku", DanmakuModifiedCriterion.Conditions.create())
                     .build(consumer, makeName("modify_danmaku"));
 
@@ -185,6 +186,27 @@ public class ModAdvancementGenerator extends FabricAdvancementProvider {
                     .criterion("kills_accumulated", InventoryChangedCriterion.Conditions.items(ItemPredicate.Builder.create()
                             .items(ModItems.MOCHI_MALLET).nbt(getKillsNbt()).build()))
                     .build(consumer, makeName("mochi_mallet_kills"));
+
+            Advancement obtainHihiirokaneIngot = Advancement.Builder.create()
+                    .parent(ritualCrafting)
+                    .display(makeDisplay(AdvancementFrame.TASK, ModItems.HIHIIROKANE_INGOT, "obtain_hihiirokane_ingot"))
+                    .criterion(ModItems.HIHIIROKANE_INGOT.toString(), InventoryChangedCriterion.Conditions.items(ModItems.HIHIIROKANE_INGOT))
+                    .build(consumer, makeName("obtain_hihiirokane_ingot"));
+
+            Advancement hihiirokaneArmor = Advancement.Builder.create()
+                    .parent(obtainHihiirokaneIngot)
+                    .display(makeDisplay(AdvancementFrame.CHALLENGE, ModItems.HIHIIROKANE_CHESTPLATE, "hihiirokane_armor"))
+                    .criterion("hihiirokane_armor", InventoryChangedCriterion.Conditions.items(ModItems.HIHIIROKANE_HELMET,
+                            ModItems.HIHIIROKANE_CHESTPLATE, ModItems.HIHIIROKANE_LEGGINGS, ModItems.HIHIIROKANE_BOOTS))
+                    .rewards(AdvancementRewards.Builder.experience(200))
+                    .build(consumer, makeName("hihiirokane_armor"));
+
+            Advancement obtainHihiirokaneHoe = Advancement.Builder.create()
+                    .parent(obtainHihiirokaneIngot)
+                    .display(makeDisplay(AdvancementFrame.CHALLENGE, ModItems.HIHIIROKANE_HOE, "obtain_hihiirokane_hoe"))
+                    .criterion(ModItems.HIHIIROKANE_HOE.toString(), InventoryChangedCriterion.Conditions.items(ModItems.HIHIIROKANE_HOE))
+                    .rewards(AdvancementRewards.Builder.experience(150))
+                    .build(consumer, makeName("obtain_hihiirokane_hoe"));
         }
 
         private static NbtCompound densityNbt() {

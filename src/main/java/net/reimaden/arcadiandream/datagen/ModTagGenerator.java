@@ -53,6 +53,10 @@ public class ModTagGenerator {
         protected void configure(RegistryWrapper.WrapperLookup arg) {
 
             // minecraft/tags/blocks
+            // fabric/tags/blocks
+            getOrCreateTagBuilder(ModTags.Blocks.NEEDS_TOOL_LEVEL_4)
+                    .addTag(ModTags.Blocks.HIHIIROKANE_ORES)
+                    .add(ModBlocks.HIHIIROKANE_CHUNK_BLOCK, ModBlocks.HIHIIROKANE_BLOCK);
             getOrCreateTagBuilder(NEEDS_DIAMOND_TOOL)
                     .addTag(ModTags.Blocks.DRAGON_GEM_ORES)
                     .add(ModBlocks.DRAGON_GEM_BLOCK, ModBlocks.RITUAL_SHRINE);
@@ -60,7 +64,7 @@ public class ModTagGenerator {
             getOrCreateTagBuilder(NEEDS_STONE_TOOL)
                     .add(ModBlocks.MAKAITE_ORE, ModBlocks.RAW_MAKAITE_BLOCK, ModBlocks.MAKAITE_BLOCK);
             getOrCreateTagBuilder(BEACON_BASE_BLOCKS)
-                    .add(ModBlocks.DRAGON_GEM_BLOCK, ModBlocks.MAKAITE_BLOCK);
+                    .add(ModBlocks.DRAGON_GEM_BLOCK, ModBlocks.MAKAITE_BLOCK, ModBlocks.HIHIIROKANE_BLOCK);
 
             // minecraft/tags/blocks/mineable
             // fabric/tags/blocks/mineable
@@ -68,8 +72,9 @@ public class ModTagGenerator {
                     .add(ModBlocks.ONBASHIRA, ModBlocks.ONBASHIRA_PILLAR, ModBlocks.DANMAKU_CRAFTING_TABLE, ModBlocks.MYSTERIOUS_SEAL);
             getOrCreateTagBuilder(PICKAXE_MINEABLE)
                     .addTag(ModTags.Blocks.DRAGON_GEM_ORES)
+                    .addTag(ModTags.Blocks.HIHIIROKANE_ORES)
                     .add(ModBlocks.DRAGON_GEM_BLOCK, ModBlocks.MAKAITE_ORE, ModBlocks.RAW_MAKAITE_BLOCK, ModBlocks.MAKAITE_BLOCK,
-                            ModBlocks.RITUAL_SHRINE);
+                            ModBlocks.RITUAL_SHRINE, ModBlocks.HIHIIROKANE_CHUNK_BLOCK, ModBlocks.HIHIIROKANE_BLOCK);
             getOrCreateTagBuilder(FabricMineableTags.SWORD_MINEABLE)
                     .add(ModBlocks.MYSTERIOUS_SEAL);
 
@@ -80,11 +85,16 @@ public class ModTagGenerator {
                     .add(ModBlocks.DRAGON_GEM_ORE, ModBlocks.DEEPSLATE_DRAGON_GEM_ORE, ModBlocks.END_STONE_DRAGON_GEM_ORE);
             getOrCreateTagBuilder(ConventionalBlockTags.ORES)
                     .addTag(ModTags.Blocks.DRAGON_GEM_ORES)
-                    .add(ModBlocks.MAKAITE_ORE);
+                    .add(ModBlocks.MAKAITE_ORE)
+                    .addTag(ModTags.Blocks.HIHIIROKANE_ORES);
             getOrCreateTagBuilder(ModTags.Blocks.FAIRIES_SPAWNABLE_ON)
                     .forceAddTag(FOXES_SPAWNABLE_ON)
                     .forceAddTag(ICE)
                     .add(Blocks.MUD);
+            getOrCreateTagBuilder(ModTags.Blocks.HIHIIROKANE_ORES)
+                    .add(ModBlocks.HIHIIROKANE_ORE, ModBlocks.DEEPSLATE_HIHIIROKANE_ORE);
+            getOrCreateTagBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)
+                    .add(ModBlocks.DANMAKU_CRAFTING_TABLE);
         }
     }
 
@@ -98,8 +108,25 @@ public class ModTagGenerator {
         protected void configure(RegistryWrapper.WrapperLookup arg) {
 
             // minecraft/tags/items
+            getOrCreateTagBuilder(AXES)
+                    .add(ModItems.MAKAITE_AXE, ModItems.HIHIIROKANE_AXE);
+            getOrCreateTagBuilder(HOES)
+                    .add(ModItems.MAKAITE_HOE, ModItems.HIHIIROKANE_HOE);
+            getOrCreateTagBuilder(PICKAXES)
+                    .add(ModItems.MAKAITE_PICKAXE, ModItems.HIHIIROKANE_PICKAXE);
+            getOrCreateTagBuilder(SHOVELS)
+                    .add(ModItems.MAKAITE_SHOVEL, ModItems.HIHIIROKANE_SHOVEL);
+            getOrCreateTagBuilder(SWORDS)
+                    .add(ModItems.MAKAITE_SWORD, ModItems.HISOU_SWORD, ModItems.DEATH_SCYTHE, ModItems.ICICLE_SWORD,
+                            ModItems.HIHIIROKANE_SWORD);
+            getOrCreateTagBuilder(TOOLS)
+                    .addTag(ConventionalItemTags.SPEARS)
+                    .addTag(ModTags.Items.HAMMERS);
+            getOrCreateTagBuilder(TRIMMABLE_ARMOR)
+                    .add(ModItems.MAKAITE_HELMET, ModItems.MAKAITE_CHESTPLATE, ModItems.MAKAITE_LEGGINGS, ModItems.MAKAITE_BOOTS,
+                            ModItems.HIHIIROKANE_HELMET, ModItems.HIHIIROKANE_CHESTPLATE, ModItems.HIHIIROKANE_LEGGINGS, ModItems.HIHIIROKANE_BOOTS);
             getOrCreateTagBuilder(BEACON_PAYMENT_ITEMS)
-                    .add(ModItems.DRAGON_GEM, ModItems.MAKAITE_INGOT);
+                    .add(ModItems.DRAGON_GEM, ModItems.MAKAITE_INGOT, ModItems.HIHIIROKANE_INGOT);
             getOrCreateTagBuilder(MUSIC_DISCS)
                     .add(ModItems.MUSIC_DISC_FAIRY_PLAYGROUND, ModItems.MUSIC_DISC_THE_SHRINE_LONG_FORGOTTEN);
             getOrCreateTagBuilder(FISHES)
@@ -109,25 +136,14 @@ public class ModTagGenerator {
             copy(ModTags.Blocks.OBSIDIAN_BLOCKS, ModTags.Items.OBSIDIAN_BLOCKS);
             copy(ModTags.Blocks.DRAGON_GEM_ORES, ModTags.Items.DRAGON_GEM_ORES);
             copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
+            copy(ModTags.Blocks.HIHIIROKANE_ORES, ModTags.Items.HIHIIROKANE_ORES);
+            copy(ConventionalBlockTags.VILLAGER_JOB_SITES, ConventionalItemTags.VILLAGER_JOB_SITES);
 
             // Modded item tags
-            getOrCreateTagBuilder(AXES)
-                    .add(ModItems.MAKAITE_AXE);
-            getOrCreateTagBuilder(HOES)
-                    .add(ModItems.MAKAITE_HOE);
-            getOrCreateTagBuilder(PICKAXES)
-                    .add(ModItems.MAKAITE_PICKAXE);
-            getOrCreateTagBuilder(SHOVELS)
-                    .add(ModItems.MAKAITE_SHOVEL);
             getOrCreateTagBuilder(ConventionalItemTags.SPEARS)
                     .add(ModItems.NUE_TRIDENT);
-            getOrCreateTagBuilder(SWORDS)
-                    .add(ModItems.MAKAITE_SWORD, ModItems.HISOU_SWORD, ModItems.DEATH_SCYTHE, ModItems.ICICLE_SWORD);
             getOrCreateTagBuilder(ModTags.Items.HAMMERS)
                     .add(ModItems.MOCHI_MALLET, ModItems.MIRACLE_MALLET, ModItems.FOLDING_CHAIR);
-            getOrCreateTagBuilder(TOOLS)
-                    .addTag(ConventionalItemTags.SPEARS)
-                    .addTag(ModTags.Items.HAMMERS);
             getOrCreateTagBuilder(ConventionalItemTags.FOODS)
                     .add(ModItems.HEAVENLY_PEACH, ModItems.LAMPREY, ModItems.COOKED_LAMPREY);
             getOrCreateTagBuilder(ModTags.Items.ITEMS)
@@ -161,6 +177,12 @@ public class ModTagGenerator {
                     .add(ModItems.LAMPREY);
             getOrCreateTagBuilder(ModTags.Items.COOKED_MEAT)
                     .add(ModItems.COOKED_LAMPREY);
+            getOrCreateTagBuilder(ConventionalItemTags.RAW_ORES)
+                    .add(ModItems.RAW_MAKAITE, ModItems.HIHIIROKANE_CHUNK);
+            getOrCreateTagBuilder(ConventionalItemTags.GEMS)
+                    .add(ModItems.DRAGON_GEM);
+            getOrCreateTagBuilder(ConventionalItemTags.INGOTS)
+                    .add(ModItems.MAKAITE_INGOT, ModItems.HIHIIROKANE_INGOT);
         }
     }
 

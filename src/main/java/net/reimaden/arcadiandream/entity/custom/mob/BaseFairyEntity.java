@@ -6,6 +6,9 @@
 package net.reimaden.arcadiandream.entity.custom.mob;
 
 import com.google.common.collect.ImmutableList;
+import dev.emi.trinkets.api.SlotReference;
+import dev.emi.trinkets.api.TrinketComponent;
+import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.FlightMoveControl;
@@ -21,19 +24,24 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Pair;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.*;
+import net.reimaden.arcadiandream.ArcadianDream;
 import net.reimaden.arcadiandream.entity.ModEntities;
 import net.reimaden.arcadiandream.entity.custom.DanmakuMob;
 import net.reimaden.arcadiandream.entity.custom.danmaku.BaseBulletEntity;
 import net.reimaden.arcadiandream.entity.custom.danmaku.CircleBulletEntity;
+import net.reimaden.arcadiandream.item.ModItems;
 import net.reimaden.arcadiandream.sound.ModSounds;
 import net.reimaden.arcadiandream.util.ColorMap;
 import net.reimaden.arcadiandream.util.ModTags;
@@ -45,7 +53,9 @@ import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -79,7 +89,7 @@ public class BaseFairyEntity extends HostileEntity implements GeoEntity, Danmaku
 
     @Override
     public void attack(LivingEntity target, float pullProgress) {
-        if (getBulletType() > availableBullets(world, this).size() - 1 || getBulletType() < 0) {
+        if (getBulletType() > availableBullets(getWorld(), this).size() - 1 || getBulletType() < 0) {
             setBulletType((byte) 0);
         }
 
@@ -94,7 +104,7 @@ public class BaseFairyEntity extends HostileEntity implements GeoEntity, Danmaku
     public void tickMovement() {
         super.tickMovement();
         Vec3d vec3d = getVelocity();
-        if (!onGround && vec3d.y < 0.0 && !(moveControl.getTargetY() < getY())) {
+        if (!isOnGround() && vec3d.y < 0.0 && !(moveControl.getTargetY() < getY())) {
             setVelocity(vec3d.multiply(1.0, 0.6, 1.0));
         }
     }
@@ -102,7 +112,7 @@ public class BaseFairyEntity extends HostileEntity implements GeoEntity, Danmaku
     @Override
     protected void mobTick() {
         super.mobTick();
-        tickAngerLogic((ServerWorld) world, true);
+        tickAngerLogic((ServerWorld) getWorld(), true);
     }
 
     @SuppressWarnings("SameReturnValue")
@@ -191,7 +201,7 @@ public class BaseFairyEntity extends HostileEntity implements GeoEntity, Danmaku
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        readAngerFromNbt(world, nbt);
+        readAngerFromNbt(getWorld(), nbt);
         setBulletColor(nbt.getInt("BulletColor"));
         setCooldownOffset(nbt.getInt("CooldownOffset"));
         setRandomNumberProvider(nbt.getInt("RandomNumberProvider"));
@@ -210,7 +220,7 @@ public class BaseFairyEntity extends HostileEntity implements GeoEntity, Danmaku
         int bulletColor = ColorMap.getRandomBulletColor(getRandom());
         int cooldownOffset = getRandom().nextInt(11) - 5;
         int randomNumberProvider = getRandom().nextInt(11) + 1;
-        byte bulletType = (byte) getRandom().nextInt(availableBullets(this.world, this).size());
+        byte bulletType = (byte) getRandom().nextInt(availableBullets(this.getWorld(), this).size());
 
         initializeBullets(bulletColor, cooldownOffset, randomNumberProvider, bulletType);
 
@@ -225,7 +235,7 @@ public class BaseFairyEntity extends HostileEntity implements GeoEntity, Danmaku
     }
 
     public static boolean canSpawn(EntityType<? extends BaseFairyEntity> type, ServerWorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
-        return world.getDifficulty() != Difficulty.PEACEFUL && isValidSpawn(world, pos) && canMobSpawn(type, world, reason, pos, random);
+        return world.getDifficulty() != Difficulty.PEACEFUL && isValidSpawn(world, pos) && canMobSpawn(type, world, reason, pos, random) && !isSpawnBlockerNear(world, pos);
     }
 
     private static boolean isValidSpawn(ServerWorldAccess world, BlockPos pos) {
@@ -235,6 +245,26 @@ public class BaseFairyEntity extends HostileEntity implements GeoEntity, Danmaku
     private static boolean isLightLevelValid(ServerWorldAccess world, BlockPos pos) {
         long timeOfDay = Objects.requireNonNull(world.getServer()).getOverworld().getTimeOfDay() % 24000;
         return world.getLightLevel(pos) > 8 && timeOfDay >= 0 && timeOfDay < 12000;
+    }
+
+    private static boolean isSpawnBlockerNear(ServerWorldAccess world, BlockPos pos) {
+        if (!ArcadianDream.CONFIG.fairyCharmOptions.canPreventSpawning()) return false;
+
+        PlayerEntity closestPlayer = world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), ArcadianDream.CONFIG.fairyCharmOptions.distance(), false);
+        Optional<TrinketComponent> trinketComponent = TrinketsApi.getTrinketComponent(closestPlayer);
+
+        if (trinketComponent.isEmpty()) return false;
+
+        List<Pair<SlotReference, ItemStack>> list = trinketComponent.get().getEquipped(ModItems.FAIRY_CHARM);
+        if (list.size() > 0) {
+            ItemStack stack = list.get(0).getRight();
+            if (stack != null) {
+                NbtCompound nbt = stack.getOrCreateNbt();
+                return closestPlayer != null && (nbt.getInt("mode") >= 1);
+            }
+        }
+
+        return false;
     }
 
     @Override

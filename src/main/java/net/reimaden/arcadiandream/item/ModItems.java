@@ -6,10 +6,8 @@
 package net.reimaden.arcadiandream.item;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -27,11 +25,20 @@ import net.reimaden.arcadiandream.item.custom.misc.*;
 import net.reimaden.arcadiandream.item.custom.tools.*;
 import net.reimaden.arcadiandream.sound.ModSounds;
 
-import java.util.Collections;
-
 public class ModItems {
 
-    // Items
+    public static final int SWORD_ATTACK_DAMAGE = 3;
+    public static final float SWORD_ATTACK_SPEED = -2.4f;
+    public static final int PICKAXE_ATTACK_DAMAGE = 1;
+    public static final float PICKAXE_ATTACK_SPEED = -2.8f;
+    public static final int AXE_ATTACK_DAMAGE = 6;
+    public static final float AXE_ATTACK_SPEED = -3.1f;
+    public static final float SHOVEL_ATTACK_DAMAGE = 1.5f;
+    public static final float SHOVEL_ATTACK_SPEED = -3.0f;
+    public static final int HOE_ATTACK_DAMAGE = -2;
+    public static final float HOE_ATTACK_SPEED = -1.0f;
+
+    // Items ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final Item POWER_ITEM = registerItem("power_item", new Item(new FabricItemSettings()));
     public static final Item BIG_POWER_ITEM = registerItem("big_power_item", new Item(new FabricItemSettings()));
     public static final Item POINT_ITEM = registerItem("point_item", new Item(new FabricItemSettings()));
@@ -47,6 +54,8 @@ public class ModItems {
     public static final Item RAW_MAKAITE = registerItem("raw_makaite", new Item(new FabricItemSettings().fireproof()));
     public static final Item MAKAITE_INGOT = registerItem("makaite_ingot", new Item(new FabricItemSettings().fireproof()));
     public static final Item ENCHANTED_ICE = registerItem("enchanted_ice", new EnchantedIceItem(new FabricItemSettings().rarity(Rarity.UNCOMMON)));
+    public static final Item HIHIIROKANE_CHUNK = registerItem("hihiirokane_chunk", new Item(new FabricItemSettings()));
+    public static final Item HIHIIROKANE_INGOT = registerItem("hihiirokane_ingot", new Item(new FabricItemSettings().fireproof()));
 
     public static final Item WALL_PASSING_CHISEL = registerItem("wall_passing_chisel", new WallPassingChiselItem(new FabricItemSettings().maxDamage(100)));
     public static final Item IBUKI_GOURD = registerItem("ibuki_gourd", new IbukiGourdItem(new FabricItemSettings().maxCount(1)));
@@ -54,6 +63,7 @@ public class ModItems {
     public static final Item HOURAI_ELIXIR = registerItem("hourai_elixir", new HouraiElixirItem(new FabricItemSettings().maxCount(1).maxDamage(3).rarity(Rarity.EPIC)));
     public static final Item MAGATAMA_NECKLACE = registerItem("magatama_necklace", new MagatamaNecklaceItem(new FabricItemSettings().maxCount(1).rarity(Rarity.UNCOMMON)));
     public static final Item GHASTLY_LANTERN = registerItem("ghastly_lantern", new GhastlyLanternItem(new FabricItemSettings().maxCount(1)));
+    public static final Item FAIRY_CHARM = registerItem("fairy_charm", new FairyCharmItem(new FabricItemSettings().maxCount(1).rarity(Rarity.UNCOMMON)));
 
     public static final Item SPREAD_PATTERN_TEMPLATE = registerItem("spread_pattern_template", new PatternTemplateItem(new FabricItemSettings().maxCount(16)));
     public static final Item RAY_PATTERN_TEMPLATE = registerItem("ray_pattern_template", new PatternTemplateItem(new FabricItemSettings().maxCount(16)));
@@ -68,15 +78,19 @@ public class ModItems {
     public static final Item DOUBLE_PATTERN = registerItem("double_pattern", new PatternItem(new FabricItemSettings().maxCount(16)));
     public static final Item TRIPLE_PATTERN = registerItem("triple_pattern", new PatternItem(new FabricItemSettings().maxCount(16)));
 
-    // Food
+    public static final Item HIHIIROKANE_UPGRADE_SMITHING_TEMPLATE = registerItem("hihiirokane_upgrade_smithing_template", ModSmithingTemplateItem.createHihiirokaneUpgrade());
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Food ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final Item HEAVENLY_PEACH = registerItem("heavenly_peach", new Item(new FabricItemSettings().maxCount(16)
             .food(ModFoodComponents.HEAVENLY_PEACH)));
     public static final Item LAMPREY = registerItem("lamprey", new Item(new FabricItemSettings()
             .food(ModFoodComponents.LAMPREY)));
     public static final Item COOKED_LAMPREY = registerItem("cooked_lamprey", new Item(new FabricItemSettings()
             .food(ModFoodComponents.COOKED_LAMPREY)));
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Armor
+    // Armor ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final Item ORDINARY_HAT = registerItem("ordinary_hat", new OrdinaryHatItem(ModArmorMaterials.ORDINARY, ArmorItem.Type.HELMET,
             new FabricItemSettings()));
 
@@ -89,19 +103,41 @@ public class ModItems {
     public static final Item MAKAITE_BOOTS = registerItem("makaite_boots", new ArmorItem(ModArmorMaterials.MAKAITE, ArmorItem.Type.BOOTS,
             new FabricItemSettings().fireproof()));
 
-    // Tools
-    public static final Item MAKAITE_SWORD = registerItem("makaite_sword", new SwordItem(ModToolMaterials.MAKAITE, 3, -2.4f,
+    public static final Item HIHIIROKANE_HELMET = registerItem("hihiirokane_helmet", new ArmorItem(ModArmorMaterials.HIHIIROKANE, ArmorItem.Type.HELMET,
             new FabricItemSettings().fireproof()));
-    public static final Item MAKAITE_PICKAXE = registerItem("makaite_pickaxe", new PickaxeItem(ModToolMaterials.MAKAITE, 1, -2.8f,
+    public static final Item HIHIIROKANE_CHESTPLATE = registerItem("hihiirokane_chestplate", new ArmorItem(ModArmorMaterials.HIHIIROKANE, ArmorItem.Type.CHESTPLATE,
             new FabricItemSettings().fireproof()));
-    public static final Item MAKAITE_AXE = registerItem("makaite_axe", new AxeItem(ModToolMaterials.MAKAITE, 6, -3.1f,
+    public static final Item HIHIIROKANE_LEGGINGS = registerItem("hihiirokane_leggings", new ArmorItem(ModArmorMaterials.HIHIIROKANE, ArmorItem.Type.LEGGINGS,
             new FabricItemSettings().fireproof()));
-    public static final Item MAKAITE_SHOVEL = registerItem("makaite_shovel", new ShovelItem(ModToolMaterials.MAKAITE, 1.5f, -3.0f,
+    public static final Item HIHIIROKANE_BOOTS = registerItem("hihiirokane_boots", new ArmorItem(ModArmorMaterials.HIHIIROKANE, ArmorItem.Type.BOOTS,
             new FabricItemSettings().fireproof()));
-    public static final Item MAKAITE_HOE = registerItem("makaite_hoe", new HoeItem(ModToolMaterials.MAKAITE, -2, -1.0f,
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Tools ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static final Item MAKAITE_SWORD = registerItem("makaite_sword", new SwordItem(ModToolMaterials.MAKAITE, SWORD_ATTACK_DAMAGE, SWORD_ATTACK_SPEED,
+            new FabricItemSettings().fireproof()));
+    public static final Item MAKAITE_PICKAXE = registerItem("makaite_pickaxe", new PickaxeItem(ModToolMaterials.MAKAITE, PICKAXE_ATTACK_DAMAGE, PICKAXE_ATTACK_SPEED,
+            new FabricItemSettings().fireproof()));
+    public static final Item MAKAITE_AXE = registerItem("makaite_axe", new AxeItem(ModToolMaterials.MAKAITE, AXE_ATTACK_DAMAGE, AXE_ATTACK_SPEED,
+            new FabricItemSettings().fireproof()));
+    public static final Item MAKAITE_SHOVEL = registerItem("makaite_shovel", new ShovelItem(ModToolMaterials.MAKAITE, SHOVEL_ATTACK_DAMAGE, SHOVEL_ATTACK_SPEED,
+            new FabricItemSettings().fireproof()));
+    public static final Item MAKAITE_HOE = registerItem("makaite_hoe", new HoeItem(ModToolMaterials.MAKAITE, HOE_ATTACK_DAMAGE, HOE_ATTACK_SPEED,
             new FabricItemSettings().fireproof()));
 
-    // Weapons
+    public static final Item HIHIIROKANE_SWORD = registerItem("hihiirokane_sword", new HihiirokaneSwordItem(ModToolMaterials.HIHIIROKANE, SWORD_ATTACK_DAMAGE, SWORD_ATTACK_SPEED,
+            new FabricItemSettings().fireproof()));
+    public static final Item HIHIIROKANE_PICKAXE = registerItem("hihiirokane_pickaxe", new HihiirokanePickaxeItem(ModToolMaterials.HIHIIROKANE, PICKAXE_ATTACK_DAMAGE, PICKAXE_ATTACK_SPEED,
+            new FabricItemSettings().fireproof()));
+    public static final Item HIHIIROKANE_AXE = registerItem("hihiirokane_axe", new HihiirokaneAxeItem(ModToolMaterials.HIHIIROKANE, AXE_ATTACK_DAMAGE, AXE_ATTACK_SPEED,
+            new FabricItemSettings().fireproof()));
+    public static final Item HIHIIROKANE_SHOVEL = registerItem("hihiirokane_shovel", new HihiirokaneShovelItem(ModToolMaterials.HIHIIROKANE, SHOVEL_ATTACK_DAMAGE, SHOVEL_ATTACK_SPEED,
+            new FabricItemSettings().fireproof()));
+    public static final Item HIHIIROKANE_HOE = registerItem("hihiirokane_hoe", new HihiirokaneHoeItem(ModToolMaterials.HIHIIROKANE, HOE_ATTACK_DAMAGE, HOE_ATTACK_SPEED,
+            new FabricItemSettings().fireproof()));
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Weapons /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final Item NUE_TRIDENT = registerItem("nue_trident", new NueTridentItem(ToolMaterials.NETHERITE, 5, -2.9f,
             new FabricItemSettings().fireproof()));
     public static final Item HISOU_SWORD = registerItem("hisou_sword", new SwordItem(ModToolMaterials.HISOU, 3, -2.0f,
@@ -116,8 +152,9 @@ public class ModItems {
             new FabricItemSettings().maxDamage(ToolMaterials.IRON.getDurability() - 50)));
     public static final Item ICICLE_SWORD = registerItem("icicle_sword", new IcicleSwordItem(ModToolMaterials.ENCHANTED_ICE, 3, -2.4f,
             new FabricItemSettings().rarity(Rarity.UNCOMMON)));
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Danmaku
+    // Danmaku /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final Item CIRCLE_BULLET_CORE = registerItem("circle_bullet_core", new BulletCoreItem(new FabricItemSettings()));
     public static final Item BUBBLE_BULLET_CORE = registerItem("bubble_bullet_core", new BulletCoreItem(new FabricItemSettings()));
     public static final Item AMULET_BULLET_CORE = registerItem("amulet_bullet_core", new BulletCoreItem(new FabricItemSettings()));
@@ -143,14 +180,16 @@ public class ModItems {
     public static final Item PELLET_SHOT = registerItem("pellet_shot", new PelletShotItem(new FabricItemSettings().maxDamage(100),
             1, 1.2f, 80, 2, 0.0f, 0.0f, "spread", 1,
             6, 2.0f, 200, 100, 90, 40));
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Music Discs
+    // Music Discs /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final Item MUSIC_DISC_FAIRY_PLAYGROUND = registerItem("music_disc_fairy_playground", new MusicDiscItem(10, ModSounds.MUSIC_DISC_FAIRY_PLAYGROUND,
             new FabricItemSettings().maxCount(1).rarity(Rarity.RARE), 180));
     public static final Item MUSIC_DISC_THE_SHRINE_LONG_FORGOTTEN = registerItem("music_disc_the_shrine_long_forgotten", new MusicDiscItem(14, ModSounds.MUSIC_DISC_THE_SHRINE_LONG_FORGOTTEN,
             new FabricItemSettings().maxCount(1).rarity(Rarity.RARE), 134));
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Spawn Eggs
+    // Spawn Eggs //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final Item FAIRY_SPAWN_EGG = registerItem("fairy_spawn_egg",
             new SpawnEggItem(ModEntities.FAIRY, 0x004BCC, 0xF6FF5F,
                     new FabricItemSettings()));
@@ -160,152 +199,27 @@ public class ModItems {
     public static final Item ICE_FAIRY_SPAWN_EGG = registerItem("ice_fairy_spawn_egg",
             new SpawnEggItem(ModEntities.ICE_FAIRY, 0xABF0FF, 0xC6FBFF,
                     new FabricItemSettings()));
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Item registerItem(String name, Item item) {
         return Registry.register(Registries.ITEM, new Identifier(ArcadianDream.MOD_ID, name), item);
     }
 
     // Block Items
-    public static final Item ONBASHIRA = registerBlockItem("onbashira", new BlockItem(ModBlocks.ONBASHIRA,
-            new FabricItemSettings()));
-    public static final Item ONBASHIRA_PILLAR = registerBlockItem("onbashira_pillar", new BlockItem(ModBlocks.ONBASHIRA_PILLAR,
-            new FabricItemSettings()));
-    public static final Item RITUAL_SHRINE = registerBlockItem("ritual_shrine", new BlockItem(ModBlocks.RITUAL_SHRINE,
-            new FabricItemSettings()));
-    public static final Item DANMAKU_CRAFTING_TABLE = registerBlockItem("danmaku_crafting_table", new BlockItem(ModBlocks.DANMAKU_CRAFTING_TABLE,
-            new FabricItemSettings()));
+    // The ones that don't require any special settings are in the ModBlocks class
     public static final Item MYSTERIOUS_SEAL = registerBlockItem("mysterious_seal", new BlockItem(ModBlocks.MYSTERIOUS_SEAL,
             new FabricItemSettings().rarity(Rarity.RARE)));
-
-    public static final Item DRAGON_GEM_ORE = registerBlockItem("dragon_gem_ore", new BlockItem(ModBlocks.DRAGON_GEM_ORE,
-            new FabricItemSettings()));
-    public static final Item DEEPSLATE_DRAGON_GEM_ORE = registerBlockItem("deepslate_dragon_gem_ore", new BlockItem(ModBlocks.DEEPSLATE_DRAGON_GEM_ORE,
-            new FabricItemSettings()));
-    public static final Item END_STONE_DRAGON_GEM_ORE = registerBlockItem("end_stone_dragon_gem_ore", new BlockItem(ModBlocks.END_STONE_DRAGON_GEM_ORE,
-            new FabricItemSettings()));
-
     public static final Item MAKAITE_ORE = registerBlockItem("makaite_ore", new BlockItem(ModBlocks.MAKAITE_ORE,
             new FabricItemSettings().fireproof()));
-
     public static final Item RAW_MAKAITE_BLOCK = registerBlockItem("raw_makaite_block", new BlockItem(ModBlocks.RAW_MAKAITE_BLOCK,
             new FabricItemSettings().fireproof()));
-
-    public static final Item DRAGON_GEM_BLOCK = registerBlockItem("dragon_gem_block", new BlockItem(ModBlocks.DRAGON_GEM_BLOCK,
-            new FabricItemSettings()));
-
     public static final Item MAKAITE_BLOCK = registerBlockItem("makaite_block", new BlockItem(ModBlocks.MAKAITE_BLOCK,
+            new FabricItemSettings().fireproof()));
+    public static final Item HIHIIROKANE_BLOCK = registerBlockItem("hihiirokane_block", new BlockItem(ModBlocks.HIHIIROKANE_BLOCK,
             new FabricItemSettings().fireproof()));
 
     private static Item registerBlockItem(String name, BlockItem block) {
         return Registry.register(Registries.ITEM, new Identifier(ArcadianDream.MOD_ID, name), block);
-    }
-
-    // Mojang moment
-    private static void addItemsToItemGroups() {
-        addToItemGroup(ModItemGroups.ITEMS, POWER_ITEM);
-        addToItemGroup(ModItemGroups.ITEMS, BIG_POWER_ITEM);
-        addToItemGroup(ModItemGroups.ITEMS, POINT_ITEM);
-        addToItemGroup(ModItemGroups.ITEMS, MAX_POINT_ITEM);
-        addToItemGroup(ModItemGroups.ITEMS, BOMB_ITEM);
-        addToItemGroup(ModItemGroups.ITEMS, LIFE_FRAGMENT);
-        addToItemGroup(ModItemGroups.ITEMS, EXTEND_ITEM);
-        addToItemGroup(ModItemGroups.ITEMS, STAR_ITEM);
-        addToItemGroup(ModItemGroups.ITEMS, FAITH_ITEM);
-        addToItemGroup(ModItemGroups.ITEMS, TIME_ORB);
-        addToItemGroup(ModItemGroups.ITEMS, DRAGON_GEM);
-        addToItemGroup(ModItemGroups.ITEMS, RAW_MAKAITE);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_INGOT);
-        addToItemGroup(ModItemGroups.ITEMS, ENCHANTED_ICE);
-        addToItemGroup(ModItemGroups.ITEMS, WALL_PASSING_CHISEL);
-        addToItemGroup(ModItemGroups.ITEMS, IBUKI_GOURD);
-        addToItemGroup(ModItemGroups.ITEMS, HEALING_CHARM);
-        addToItemGroup(ModItemGroups.ITEMS, HOURAI_ELIXIR);
-        addToItemGroup(ModItemGroups.ITEMS, MAGATAMA_NECKLACE);
-        addToItemGroup(ModItemGroups.ITEMS, GHASTLY_LANTERN);
-        addToItemGroup(ModItemGroups.ITEMS, HEAVENLY_PEACH);
-        addToItemGroup(ModItemGroups.ITEMS, LAMPREY);
-        addToItemGroup(ModItemGroups.ITEMS, COOKED_LAMPREY);
-        addToItemGroup(ModItemGroups.ITEMS, ORDINARY_HAT);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_HELMET);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_CHESTPLATE);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_LEGGINGS);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_BOOTS);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_SWORD);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_PICKAXE);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_AXE);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_SHOVEL);
-        addToItemGroup(ModItemGroups.ITEMS, MAKAITE_HOE);
-        addToItemGroup(ModItemGroups.ITEMS, NUE_TRIDENT);
-        addToItemGroup(ModItemGroups.ITEMS, HISOU_SWORD);
-        addToItemGroup(ModItemGroups.ITEMS, MOCHI_MALLET);
-        addToItemGroup(ModItemGroups.ITEMS, DEATH_SCYTHE);
-        addToItemGroup(ModItemGroups.ITEMS, MIRACLE_MALLET);
-        addToItemGroup(ModItemGroups.ITEMS, FOLDING_CHAIR);
-        addToItemGroup(ModItemGroups.ITEMS, ICICLE_SWORD);
-        addToItemGroup(ModItemGroups.ITEMS, SPREAD_PATTERN_TEMPLATE);
-        addToItemGroup(ModItemGroups.ITEMS, RAY_PATTERN_TEMPLATE);
-        addToItemGroup(ModItemGroups.ITEMS, RING_PATTERN_TEMPLATE);
-        addToItemGroup(ModItemGroups.ITEMS, ARC_PATTERN_TEMPLATE);
-        addToItemGroup(ModItemGroups.ITEMS, DOUBLE_PATTERN_TEMPLATE);
-        addToItemGroup(ModItemGroups.ITEMS, TRIPLE_PATTERN_TEMPLATE);
-        addToItemGroup(ModItemGroups.ITEMS, MUSIC_DISC_FAIRY_PLAYGROUND);
-        addToItemGroup(ModItemGroups.ITEMS, MUSIC_DISC_THE_SHRINE_LONG_FORGOTTEN);
-
-        addToItemGroup(ModItemGroups.DANMAKU, BOMB_ITEM);
-        addToItemGroup(ModItemGroups.DANMAKU, DANMAKU_CRAFTING_TABLE);
-        addToItemGroup(ModItemGroups.DANMAKU, CIRCLE_BULLET_CORE);
-        addToItemGroup(ModItemGroups.DANMAKU, BUBBLE_BULLET_CORE);
-        addToItemGroup(ModItemGroups.DANMAKU, AMULET_BULLET_CORE);
-        addToItemGroup(ModItemGroups.DANMAKU, STAR_BULLET_CORE);
-        addToItemGroup(ModItemGroups.DANMAKU, KUNAI_BULLET_CORE);
-        addToItemGroup(ModItemGroups.DANMAKU, PELLET_BULLET_CORE);
-        addToItemGroup(ModItemGroups.DANMAKU, CIRCLE_SHOT);
-        addToItemGroup(ModItemGroups.DANMAKU, BUBBLE_SHOT);
-        addToItemGroup(ModItemGroups.DANMAKU, AMULET_SHOT);
-        addToItemGroup(ModItemGroups.DANMAKU, STAR_SHOT);
-        addToItemGroup(ModItemGroups.DANMAKU, KUNAI_SHOT);
-        addToItemGroup(ModItemGroups.DANMAKU, PELLET_SHOT);
-        addToItemGroup(ModItemGroups.DANMAKU, SPREAD_PATTERN);
-        addToItemGroup(ModItemGroups.DANMAKU, RAY_PATTERN);
-        addToItemGroup(ModItemGroups.DANMAKU, RING_PATTERN);
-        addToItemGroup(ModItemGroups.DANMAKU, ARC_PATTERN);
-        addToItemGroup(ModItemGroups.DANMAKU, DOUBLE_PATTERN);
-        addToItemGroup(ModItemGroups.DANMAKU, TRIPLE_PATTERN);
-
-        addToItemGroup(ModItemGroups.BLOCKS, ONBASHIRA);
-        addToItemGroup(ModItemGroups.BLOCKS, ONBASHIRA_PILLAR);
-        addToItemGroup(ModItemGroups.BLOCKS, RITUAL_SHRINE);
-        addToItemGroup(ModItemGroups.BLOCKS, DANMAKU_CRAFTING_TABLE);
-        addToItemGroup(ModItemGroups.BLOCKS, MYSTERIOUS_SEAL);
-        addToItemGroup(ModItemGroups.BLOCKS, DRAGON_GEM_ORE);
-        addToItemGroup(ModItemGroups.BLOCKS, DEEPSLATE_DRAGON_GEM_ORE);
-        addToItemGroup(ModItemGroups.BLOCKS, END_STONE_DRAGON_GEM_ORE);
-        addToItemGroup(ModItemGroups.BLOCKS, MAKAITE_ORE);
-        addToItemGroup(ModItemGroups.BLOCKS, RAW_MAKAITE_BLOCK);
-        addToItemGroup(ModItemGroups.BLOCKS, DRAGON_GEM_BLOCK);
-        addToItemGroup(ModItemGroups.BLOCKS, MAKAITE_BLOCK);
-
-        addToItemGroup(ItemGroups.SPAWN_EGGS, FAIRY_SPAWN_EGG);
-        addToItemGroup(ItemGroups.SPAWN_EGGS, SUNFLOWER_FAIRY_SPAWN_EGG);
-        addToItemGroup(ItemGroups.SPAWN_EGGS, ICE_FAIRY_SPAWN_EGG);
-
-        addSuspiciousStews();
-    }
-
-    private static void addToItemGroup(ItemGroup group, Item item) {
-        ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.add(item));
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static void addToItemGroup(ItemGroup group, ItemStack stack, ItemGroup.StackVisibility visibility) {
-        //noinspection UnstableApiUsage
-        ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.addAfter(Items.SUSPICIOUS_STEW, Collections.singletonList(stack), visibility));
-    }
-
-    private static void addSuspiciousStews() {
-        ItemStack stack = new ItemStack(Items.SUSPICIOUS_STEW);
-        SuspiciousStewItem.addEffectToStew(stack, StatusEffects.LEVITATION, 200);
-        addToItemGroup(ItemGroups.FOOD_AND_DRINK, stack, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
     }
 
     private static void addCompostables() {
@@ -318,9 +232,9 @@ public class ModItems {
     }
 
     private static void addFuel() {
-        addToFuelRegistry(ONBASHIRA, 300);
-        addToFuelRegistry(ONBASHIRA_PILLAR, 300);
-        addToFuelRegistry(DANMAKU_CRAFTING_TABLE, 300);
+        addToFuelRegistry(ModBlocks.ONBASHIRA.asItem(), 300);
+        addToFuelRegistry(ModBlocks.ONBASHIRA_PILLAR.asItem(), 300);
+        addToFuelRegistry(ModBlocks.DANMAKU_CRAFTING_TABLE.asItem(), 300);
         addToFuelRegistry(MOCHI_MALLET, 200);
         addToFuelRegistry(ORDINARY_HAT, 100);
     }
@@ -332,7 +246,6 @@ public class ModItems {
     public static void register() {
         ArcadianDream.LOGGER.debug("Registering items for " + ArcadianDream.MOD_ID);
 
-        addItemsToItemGroups();
         addCompostables();
         addFuel();
     }

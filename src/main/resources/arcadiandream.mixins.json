@@ -4,6 +4,7 @@
   "package": "net.reimaden.arcadiandream.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BlockMixin",
     "DamageEnchantmentMixin",
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
@@ -14,6 +15,7 @@
     "MilkBucketItemMixin",
     "PlayerEntityMixin",
     "ProjectileEntityMixin",
+    "SmithingTemplateItemInvoker",
     "ThrownEntityMixin",
     "TntBlockMixin",
     "UnbreakingEnchantmentMixin"
@@ -22,6 +24,7 @@
     "client.ClientPlayNetworkHandlerMixin",
     "client.EntityRendererMixin",
     "client.GameRendererMixin",
+    "client.ItemRendererAccessor",
     "client.ItemRendererMixin",
     "client.LivingEntityRendererMixin",
     "client.PlayerEntityRendererMixin"
